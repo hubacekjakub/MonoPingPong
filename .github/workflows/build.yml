@@ -51,6 +51,9 @@ jobs:
     runs-on: windows-latest
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write  # Required for creating releases
+      packages: read   # Required for accessing packages
     
     steps:
     - name: Checkout code
