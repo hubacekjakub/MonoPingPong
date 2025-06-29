@@ -370,3 +370,6 @@ $RECYCLE.BIN/
 ## Game specific temporary files
 *.cache
 *.tmp
+
+## GitHub Actions (keep workflows)
+# !.github/
