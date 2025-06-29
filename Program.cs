@@ -4,6 +4,9 @@ using MonoPingPong.Core;
 
 namespace Core
 {
+    /// <summary>
+    /// Application entry point for the MonoPingPong game.
+    /// </summary>
     internal static class Program
     {
         [STAThread]

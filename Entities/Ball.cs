@@ -4,6 +4,9 @@ using System;
 
 namespace MonoPingPong.Entities;
 
+/// <summary>
+/// Game ball entity with physics, collision detection, and speed management.
+/// </summary>
 public class Ball : GameEntity
 {
     private const int BallSize = 20;

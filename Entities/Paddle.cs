@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoPingPong.Entities;
 
+/// <summary>
+/// Player and AI paddle entity with movement and boundary constraints.
+/// </summary>
 public class Paddle : GameEntity
 {
     private const int PaddleWidth = 20;

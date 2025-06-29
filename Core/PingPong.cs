@@ -7,6 +7,9 @@ using System;
 
 namespace MonoPingPong.Core;
 
+/// <summary>
+/// Main game class that manages the MonoPingPong game loop, states, and rendering.
+/// </summary>
 public class PingPong : Game
 {
     private GraphicsDeviceManager _graphics;

@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoPingPong.Entities;
 
+/// <summary>
+/// Base class for all game entities with position, velocity, and rendering capabilities.
+/// </summary>
 public abstract class GameEntity
 {
     public Vector2 Position { get; set; }

@@ -4,6 +4,9 @@ using System;
 
 namespace MonoPingPong.Physics;
 
+/// <summary>
+/// Manages collision detection between ball, paddles, and screen boundaries.
+/// </summary>
 public class CollisionManager
 {
     private readonly Ball _ball;

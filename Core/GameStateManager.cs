@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoPingPong.Core;
 
+/// <summary>
+/// Enumeration of possible game states.
+/// </summary>
 public enum GameState
 {
     MainMenu,
@@ -11,6 +14,9 @@ public enum GameState
     GameOver
 }
 
+/// <summary>
+/// Manages transitions between different game states (menu, playing, paused, game over).
+/// </summary>
 public class GameStateManager
 {
     private GameState _currentState;

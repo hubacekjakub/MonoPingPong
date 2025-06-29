@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoPingPong.UserInterface;
 
+/// <summary>
+/// Handles score display and user interface rendering for the game.
+/// </summary>
 public class UserInterface
 {
     private SpriteFont _font;

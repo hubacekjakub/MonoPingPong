@@ -4,6 +4,9 @@ using System;
 
 namespace MonoPingPong.Core;
 
+/// <summary>
+/// Controls the AI paddle behavior with configurable difficulty levels.
+/// </summary>
 public class AIController
 {
     private readonly Paddle _aiPaddle;

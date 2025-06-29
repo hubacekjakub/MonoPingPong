@@ -4,6 +4,9 @@ using MonoPingPong.Entities;
 
 namespace MonoPingPong.Input;
 
+/// <summary>
+/// Handles keyboard and gamepad input for player controls and game navigation.
+/// </summary>
 public class InputManager
 {
     private KeyboardState _currentKeyboardState;
