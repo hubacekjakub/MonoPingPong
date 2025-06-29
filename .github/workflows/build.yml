@@ -32,6 +32,10 @@ jobs:
       run: dotnet test --no-build --configuration Release --verbosity normal
       continue-on-error: true  # Continue even if no tests exist
 
+    - name: Code formatting check
+      run: dotnet format --verify-no-changes --verbosity diagnostic
+      continue-on-error: true  # Don't fail build on formatting issues
+
     - name: Publish artifacts
       run: dotnet publish --no-build --configuration Release --output ./publish
 
@@ -41,22 +45,3 @@ jobs:
         name: MonoPingPong-Release
         path: ./publish/
         retention-days: 30
-
-  code-quality:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-        
-    - name: Restore dependencies
-      run: dotnet restore
-      
-    - name: Code formatting check
-      run: dotnet format --verify-no-changes --verbosity diagnostic
-      continue-on-error: true  # Don't fail build on formatting issues
