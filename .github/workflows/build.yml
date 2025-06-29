@@ -3,6 +3,7 @@ name: Build MonoPingPong
 on:
   push:
     branches: [ main, master ]
+    tags: [ 'v*' ]  # Trigger on version tags like v1.0.0
   pull_request:
     branches: [ main, master ]
 
@@ -33,7 +34,7 @@ jobs:
       continue-on-error: true  # Continue even if no tests exist
 
     - name: Code formatting check
-      run: dotnet format --verify-no-changes --verbosity diagnostic
+      run: dotnet format MonoPingPong.sln --verify-no-changes --verbosity diagnostic
       continue-on-error: true  # Don't fail build on formatting issues
 
     - name: Publish artifacts
@@ -45,3 +46,101 @@ jobs:
         name: MonoPingPong-Release
         path: ./publish/
         retention-days: 30
+
+  release:
+    runs-on: windows-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dotnet tools
+      run: dotnet tool restore
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build and publish release
+      run: dotnet publish --configuration Release --output ./release
+
+    - name: Create release archive
+      run: Compress-Archive -Path ./release/* -DestinationPath MonoPingPong-${{ github.ref_name }}.zip
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: MonoPingPong-${{ github.ref_name }}.zip
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    runs-on: windows-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')  # Only run on version tags
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dotnet tools
+      run: dotnet tool restore
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build Release
+      run: dotnet build --configuration Release
+
+    - name: Publish Release Build
+      run: dotnet publish --configuration Release --output ./release-build
+
+    - name: Create Release Package
+      run: |
+        Compress-Archive -Path ./release-build/* -DestinationPath MonoPingPong-${{ github.ref_name }}.zip
+      shell: pwsh
+
+    - name: Extract release notes
+      id: release_notes
+      run: |
+        $tag = "${{ github.ref_name }}"
+        $notes = "🎮 MonoPingPong Release $tag`n`n🚀 What's New:`n- Built with MonoGame framework`n- AI-assisted development showcase`n- Classic Pong gameplay with difficulty settings`n`n📦 Download and extract the zip file to play!`n`n🎯 System Requirements:`n- Windows OS`n- .NET 8.0 Runtime (included in package)"
+        "RELEASE_NOTES<<EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        $notes | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        "EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      shell: pwsh
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: MonoPingPong ${{ github.ref_name }}
+        body: ${{ steps.release_notes.outputs.RELEASE_NOTES }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./MonoPingPong-${{ github.ref_name }}.zip
+        asset_name: MonoPingPong-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
